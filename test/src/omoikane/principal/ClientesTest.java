@@ -23,7 +23,7 @@ public class ClientesTest {
             public void run() {
                 Platform.setImplicitExit(false);
                 omoikane.principal.Principal.setConfig(new omoikane.sistema.Config());
-                omoikane.principal.Principal.applicationContext = new ClassPathXmlApplicationContext("applicationContext-test.xml");
+                omoikane.principal.Principal.applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
 
 
                 JFrame jFrame = new JFrame("Caja");

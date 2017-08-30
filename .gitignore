@@ -24,3 +24,9 @@ LogoHA.png
 *.db
 
 cdsoro.properties
+.idea/
+build/classes/
+build/resources/
+gradle/
+gradlew
+gradlew.bat

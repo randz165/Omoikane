@@ -50,6 +50,12 @@ public class Articulo implements Serializable, IProductoApreciado {
     private Integer idLinea;
     @Column(name = "descripcion")
     private String descripcion;
+
+//    @Column(name = "CLAVE_UNIDAD_SAT_CLAVE")
+//    private String claveUnidadSat;
+//    @Column(name = "CLAVE_PRODUCTO_SAT_CLAVE")
+//    private String claveProductoSat;
+
     @Column(name = "unidad")
     private String unidad;
     @Basic(optional = false)
@@ -321,5 +327,21 @@ public class Articulo implements Serializable, IProductoApreciado {
     public void setDepartamentoId(Long departamentoId) {
         this.departamentoId = departamentoId;
     }
+
+//    public String getClaveUnidadSat() {
+//        return claveUnidadSat;
+//    }
+//
+//    public void setClaveUnidadSat(String claveUnidadSat) {
+//        this.claveUnidadSat = claveUnidadSat;
+//    }
+//
+//    public String getClaveProductoSat() {
+//        return claveProductoSat;
+//    }
+//
+//    public void setClaveProductoSat(String claveProductoSat) {
+//        this.claveProductoSat = claveProductoSat;
+//    }
 }
 

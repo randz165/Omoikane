@@ -18,10 +18,10 @@ SimpleDateFormat sdf  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy @ hh:mm:ss a ");
 Calendar         fecha= Calendar.getInstance()
 
-horas = ["horaAbierta":"2015-09-28 7:38:00", "horaCerrada":"2015-09-28 21:53:00"];
+horas = ["horaAbierta":"2016-12-28 07:41:00", "horaCerrada":"2016-12-28 22:00:00"];
 def IDCaja = 1;
 def idAlmacen = 1;
-def cortar = true;
+def cortar = false;
 
 //def ventas= serv.sumaVentas(IDCaja, sdf.format(horas.horaAbierta), sdf.format(horas.horaCerrada))
 def instanciaCortes = ContextoCorte.instanciar()

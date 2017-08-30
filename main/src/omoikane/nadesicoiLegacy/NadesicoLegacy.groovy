@@ -43,6 +43,8 @@ public class NadesicoLegacy {
               CorteDual.asignarA                this
               Sucursales.asignarA               this
               PuertoNadesico.asignarA           this
+              ClaveUnidadSat.asignarA           this
+              ClaveProductoSat.asignarA         this
 
         } catch(e) { logger.error("Error al iniciar servicio de nadesicoLegacy", e); }
     }

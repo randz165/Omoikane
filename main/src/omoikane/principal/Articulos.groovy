@@ -244,10 +244,20 @@ public class Articulos
             art.getImpuestos();
 
             // -- Cargar desde la BD el nombre del grupo, línea y las notas (anotación)
-            Query q = getEntityManager().createNativeQuery("SELECT an.texto as texto, l.descripcion as linea, g.descripcion as grupo FROM articulos a JOIN lineas l ON a.id_linea = l.id_linea JOIN grupos g ON a.id_grupo = g.id_grupo LEFT JOIN anotaciones an ON an.id_articulo = a.id_articulo WHERE a.id_articulo = " + art.idArticulo);
+            Query q = getEntityManager().createNativeQuery(
+                    """SELECT an.texto as texto, l.descripcion as linea, g.descripcion as grupo, cus.clave as unidadClave, cus.nombre as unidad, cps.clave as articuloClave, cps.descripcion as claveProductoSat 
+                            FROM articulos a 
+                                JOIN lineas l ON a.id_linea = l.id_linea 
+                                JOIN grupos g ON a.id_grupo = g.id_grupo 
+                                JOIN CLAVE_UNIDAD_SAT cus ON a.CLAVE_UNIDAD_SAT_CLAVE = cus.clave
+                                JOIN CLAVE_PRODUCTO_SAT cps ON a.CLAVE_PRODUCTO_SAT_CLAVE = cps.clave
+                                LEFT JOIN anotaciones an ON an.id_articulo = a.id_articulo 
+                            WHERE a.id_articulo = """ + art.idArticulo);
             List rs = q.getResultList();
             def lin = ["id": art.getIdLinea(), "descripcion": rs.get(0)[1]];
             def gru = ["id": art.getIdGrupo(), "descripcion": rs.get(0)[2]];
+            def cus = ["clave": rs.get(0)[3]  , "unidad": rs.get(0)[4]];
+            def cps = ["clave": rs.get(0)[5]  , "descripcion": rs.get(0)[6]];
             def notas = rs.get(0)[0];
 
             formArticulo.setTxtIDArticulo    art.idArticulo           as String
@@ -256,8 +266,13 @@ public class Articulos
             formArticulo.setTxtIDGrupo       art.idGrupo              as String
             formArticulo.setTxtIDLineaDes    lin.descripcion           as String
             formArticulo.setTxtIDGrupoDes    gru.descripcion           as String
+
+            formArticulo.getTxtClaveUnidadSat().setText( cus.clave as String )
+            formArticulo.getTxtClaveUnidadSatDes().setText( cus.unidad as String )
+            formArticulo.getTxtClaveProductoSat().setText( cps.clave as String )
+            formArticulo.getTxtClaveProductoSatDes().setText( cps.descripcion as String )
+
             formArticulo.setTxtDescripcion   art.descripcion
-            formArticulo.setTxtUnidad        art.unidad
             formArticulo.setTxtImpuestos     art.precio.impuestos   as String
             formArticulo.setTxtUModificacion art.uModificacion         as String
             formArticulo.setTxtDescuento     precio.descuento  as String
@@ -312,25 +327,28 @@ public class Articulos
     {
         if(cerrojo(PMA_MODIFICARARTICULO)){
             Herramientas.verificaCampos {
-                def codigo        = formArticulo.getTxtCodigo()
-                def IDLinea       = formArticulo.getTxtIDLinea()
-                def IDGrupo       = formArticulo.getTxtIDGrupo()
-                def descripcion   = formArticulo.getTxtDescripcion()
-                def unidad        = formArticulo.getTxtUnidad()
-                def costo         = formArticulo.getTxtCosto()
-                def descuento     = formArticulo.getTxtDesctoPorcentaje().text
-                def utilidad      = formArticulo.getTxtUtilidadPorc().text
+                def codigo           = formArticulo.getTxtCodigo()
+                def IDLinea          = formArticulo.getTxtIDLinea()
+                def IDGrupo          = formArticulo.getTxtIDGrupo()
+                def descripcion      = formArticulo.getTxtDescripcion()
+                def costo            = formArticulo.getTxtCosto()
+                def descuento        = formArticulo.getTxtDesctoPorcentaje().text
+                def utilidad         = formArticulo.getTxtUtilidadPorc().text
+                def claveUnidadSat   = formArticulo.getTxtClaveUnidadSat().text
+                def claveProductoSat = formArticulo.getTxtClaveProductoSat().text
                 def existencias   = 0;
                 Departamento departamento  = formArticulo.getComboDepartamento().getSelectedItem();
 
                 def notas   = formArticulo.getTxtComentarios()
-                Herramientas.verificaCampo(codigo,Herramientas.texto,"codigo"+Herramientas.error1)
-                Herramientas.verificaCampo(IDLinea,Herramientas.numero,"ID linea"+Herramientas.error2)
-                Herramientas.verificaCampo(IDGrupo,Herramientas.numero,"ID Grupo"+Herramientas.error2)
-                Herramientas.verificaCampo(descripcion,Herramientas.texto,"descripcion"+Herramientas.error1)
-                Herramientas.verificaCampo(costo,Herramientas.numeroReal,"costos"+Herramientas.error3)
-                Herramientas.verificaCampo(descuento,Herramientas.numeroReal,"descuento"+Herramientas.error3)
-                Herramientas.verificaCampo(utilidad,Herramientas.numeroReal,"utilidad"+Herramientas.error3)
+                Herramientas.verificaCampo(codigo           ,Herramientas.texto,"codigo"+Herramientas.error1)
+                Herramientas.verificaCampo(IDLinea          ,Herramientas.numero,"ID linea"+Herramientas.error2)
+                Herramientas.verificaCampo(IDGrupo          ,Herramientas.numero,"ID Grupo"+Herramientas.error2)
+                Herramientas.verificaCampo(claveUnidadSat   ,Herramientas.texto,"Clave unidad"+Herramientas.error1)
+                Herramientas.verificaCampo(claveProductoSat ,Herramientas.texto,"Clave producto"+Herramientas.error1)
+                Herramientas.verificaCampo(descripcion      ,Herramientas.texto,"descripcion"+Herramientas.error1)
+                Herramientas.verificaCampo(costo            ,Herramientas.numeroReal,"costos"+Herramientas.error3)
+                Herramientas.verificaCampo(descuento        ,Herramientas.numeroReal,"descuento"+Herramientas.error3)
+                Herramientas.verificaCampo(utilidad         ,Herramientas.numeroReal,"utilidad"+Herramientas.error3)
 
                 IDLinea       = java.lang.Integer.valueOf(IDLinea)
                 IDGrupo       = java.lang.Integer.valueOf(IDGrupo)
@@ -340,16 +358,21 @@ public class Articulos
                 existencias   = existencias as Double
                 try {
                     def serv   = Nadesico.conectar()
-                    if(!serv.getLinea(IDLinea)) throw new Exception("Campo ID Línea inválida")
-                    if(!serv.getGrupo(IDGrupo)) throw new Exception("Campo ID Grupo inválida")
+                    if(!serv.getLinea(IDLinea))                     throw new Exception("Campo ID Línea inválida")
+                    if(!serv.getGrupo(IDGrupo))                     throw new Exception("Campo ID Grupo inválida")
+                    if(!serv.getClaveUnidadSat(claveUnidadSat))     throw new Exception("Campo Clave Unidad SAT es inválido")
+                    if(!serv.getClaveProductoSat(claveProductoSat)) throw new Exception("Campo Clave Producto SAT es inválido")
                     def datAdd = serv.addArticulo(
                             IDAlmacen,
                             IDLinea,
                             IDGrupo,
                             departamento.getId(),
+                            claveUnidadSat,
+                            claveProductoSat,
+
                             codigo,
                             descripcion,
-                            unidad,
+
                             costo,
                             descuento,
                             utilidad,
@@ -457,10 +480,14 @@ public class Articulos
             SwingBuilder.build {
                 //Al presionar F1: (lanzarCatalogoDialogo)
                 def serv        = Nadesico.conectar()
-                form.getCampoID()   .keyReleased = { if(it.keyCode == it.VK_F1) Thread.start {form.txtIDLinea= Lineas.lanzarCatalogoDialogo() as String; form.getIDLinea().requestFocus();form.setTxtIDLineaDes((serv.getLinea(form.getIDLinea().text)).descripcion)}  }
+                form.getCampoID()   .keyReleased = { if(it.keyCode == it.VK_F1) Thread.start {form.txtIDLinea= Lineas.lanzarCatalogoDialogo() as String; form.getIDLinea().requestFocus();form.setTxtIDLineaDes((serv.getLinea(form.getIDLinea().text))?.descripcion)}  }
                 form.getCampoID()   .focusLost   = { if(form.getCampoID().text != "") Thread.start { form.setTxtIDLineaDes((serv.getLinea(form.getIDLinea().text))?.descripcion?:"")} }
-                form.getCampoGrupo().keyReleased = { if(it.keyCode == it.VK_F1) Thread.start {form.txtIDGrupo= Grupos.lanzarCatalogoDialogo() as String; form.getIDGrupo().requestFocus();form.setTxtIDGrupoDes((serv.getGrupo(form.getIDGrupo().text)).descripcion)}  }
+                form.getCampoGrupo().keyReleased = { if(it.keyCode == it.VK_F1) Thread.start {form.txtIDGrupo= Grupos.lanzarCatalogoDialogo() as String; form.getIDGrupo().requestFocus();form.setTxtIDGrupoDes((serv.getGrupo(form.getIDGrupo().text))?.descripcion)}  }
                 form.getCampoGrupo().focusLost   = { if(form.getIDGrupo().text != "") Thread.start { form.setTxtIDGrupoDes((serv.getGrupo(form.getIDGrupo().text))?.descripcion?:"")}  }
+                form.getTxtClaveUnidadSat().keyReleased = { if(it.keyCode == it.VK_F1) Thread.start {form.getTxtClaveUnidadSat().setText( ClaveUnidadSat.lanzarCatalogoDialogo() as String ); form.getTxtClaveUnidadSat().requestFocus(); form.getTxtClaveUnidadSatDes().setText((serv.getClaveUnidadSat(form.getTxtClaveUnidadSat().text))?.descripcion)}  }
+                form.getTxtClaveUnidadSat().focusLost   = { if(form.getTxtClaveUnidadSat().text != "") Thread.start { form.getTxtClaveUnidadSatDes().setText ((serv.getClaveUnidadSat(form.getTxtClaveUnidadSat().text))?.descripcion?:"")}  }
+                form.getTxtClaveProductoSat().keyReleased = { if(it.keyCode == it.VK_F1) Thread.start {form.getTxtClaveProductoSat().setText( ClaveProductoSat.lanzarCatalogoDialogo() as String ); form.getTxtClaveProductoSat().requestFocus(); form.getTxtClaveProductoSatDes().setText((serv.getClaveProductoSat(form.getTxtClaveProductoSat().text))?.descripcion)}  }
+                form.getTxtClaveProductoSat().focusLost   = { if(form.getTxtClaveProductoSat().text != "") Thread.start { form.getTxtClaveProductoSatDes().setText ((serv.getClaveProductoSat(form.getTxtClaveProductoSat().text))?.descripcion?:"")}  }
                 serv.desconectar()
             }
             try { form.setSelected(true) } catch(Exception e)
@@ -488,6 +515,10 @@ public class Articulos
                 formArticulo.getCampoID()   .focusLost   = { if(formArticulo.getCampoID().text != "") Thread.start { formArticulo.setTxtIDLineaDes((serv.getLinea(formArticulo.getIDLinea().text))?.descripcion?:"")} }
                 formArticulo.getCampoGrupo().keyReleased = { if(it.keyCode == it.VK_F1) Thread.start {formArticulo.txtIDGrupo= Grupos.lanzarCatalogoDialogo() as String; formArticulo.getIDGrupo().requestFocus();formArticulo.setTxtIDGrupoDes((serv.getGrupo(formArticulo.getIDGrupo().text)).descripcion)}  }
                 formArticulo.getCampoGrupo().focusLost   = { if(formArticulo.getIDGrupo().text != "") Thread.start { formArticulo.setTxtIDGrupoDes((serv.getGrupo(formArticulo.getIDGrupo().text))?.descripcion?:"")}  }
+                formArticulo.getTxtClaveUnidadSat().keyReleased = { if(it.keyCode == it.VK_F1) Thread.start {formArticulo.getTxtClaveUnidadSat().setText( ClaveUnidadSat.lanzarCatalogoDialogo() as String ); formArticulo.getTxtClaveUnidadSat().requestFocus(); formArticulo.getTxtClaveUnidadSatDes().setText((serv.getClaveUnidadSat(formArticulo.getTxtClaveUnidadSat().text))?.descripcion)}  }
+                formArticulo.getTxtClaveUnidadSat().focusLost   = { if(formArticulo.getTxtClaveUnidadSat().text != "") Thread.start { formArticulo.getTxtClaveUnidadSatDes().setText ((serv.getClaveUnidadSat(formArticulo.getTxtClaveUnidadSat().text))?.descripcion?:"")}  }
+                formArticulo.getTxtClaveProductoSat().keyReleased = { if(it.keyCode == it.VK_F1) Thread.start {formArticulo.getTxtClaveProductoSat().setText( ClaveProductoSat.lanzarCatalogoDialogo() as String ); formArticulo.getTxtClaveProductoSat().requestFocus(); formArticulo.getTxtClaveProductoSatDes().setText((serv.getClaveProductoSat(formArticulo.getTxtClaveProductoSat().text))?.descripcion)}  }
+                formArticulo.getTxtClaveProductoSat().focusLost   = { if(formArticulo.getTxtClaveProductoSat().text != "") Thread.start { formArticulo.getTxtClaveProductoSatDes().setText ((serv.getClaveProductoSat(formArticulo.getTxtClaveProductoSat().text))?.descripcion?:"")}  }
                 serv.desconectar()
          }
         formArticulo.setModoModificar();
@@ -501,7 +532,10 @@ public class Articulos
             def f = formArticulo
             Departamento departamento = f.getComboDepartamento().getSelectedItem();
             def c = [cod:f.getTxtCodigo(), lin:f.getTxtIDLinea(),gru:f.getTxtIDGrupo(), dep: departamento.getId(),des:f.getTxtDescripcion(), cos:f.getTxtCosto(),
-            dto:f.getTxtDesctoPorcentaje().text, uti:f.getTxtUtilidadPorc().text, art:f.getTxtIDArticulo(), uni:f.getTxtUnidad(), notas:f.getTxtComentarios()]
+            dto:f.getTxtDesctoPorcentaje().text, uti:f.getTxtUtilidadPorc().text, art:f.getTxtIDArticulo(), notas:f.getTxtComentarios()]
+            def claveUnidadSat   = formArticulo.getTxtClaveUnidadSat().text
+            def claveProductoSat = formArticulo.getTxtClaveProductoSat().text
+
             Herramientas.verificaCampos {
                 Herramientas.verificaCampo(c.cod,Herramientas.texto,"codigo"+Herramientas.error1)
                 Herramientas.verificaCampo(c.lin,Herramientas.numero,"ID linea"+Herramientas.error2)
@@ -510,12 +544,16 @@ public class Articulos
                 Herramientas.verificaCampo(c.cos,Herramientas.numeroReal,"costos"+Herramientas.error3)
                 Herramientas.verificaCampo(c.dto,Herramientas.numeroReal,"descuento"+Herramientas.error3)
                 Herramientas.verificaCampo(c.uti,Herramientas.numeroReal,"utilidad"+Herramientas.error3)
+                Herramientas.verificaCampo(claveUnidadSat   ,Herramientas.texto,"Clave unidad"+Herramientas.error1)
+                Herramientas.verificaCampo(claveProductoSat ,Herramientas.texto,"Clave producto"+Herramientas.error1)
 
                 def serv = Nadesico.conectar()
                 if(!serv.getLinea(c.lin)) throw new Exception("Campo ID Línea inválida")
                 if(!serv.getGrupo(c.gru)) throw new Exception("Campo ID Grupo inválida")
+                if(!serv.getClaveUnidadSat(claveUnidadSat))     throw new Exception("Campo Clave Unidad SAT es inválido")
+                if(!serv.getClaveProductoSat(claveProductoSat)) throw new Exception("Campo Clave Producto SAT es inválido")
 
-                Dialogos.lanzarAlerta(serv.modArticulo(IDAlmacen, c.art, c.cod, c.lin, c.gru, c.dep, c.des, c.uni, c.cos, c.uti, c.dto))
+                Dialogos.lanzarAlerta(serv.modArticulo(IDAlmacen, c.art, c.cod, c.lin, c.gru, c.dep, claveUnidadSat, claveProductoSat, c.des, c.uni, c.cos, c.uti, c.dto))
                 serv.modAnotacion(IDAlmacen, c.art, c.notas)
                 serv.desconectar()
                 guardarImpuestos(Long.parseLong( c.art ), ((ImpuestosTableModel)formArticulo.getImpuestosTable().getModel()).getImpuestoList());
