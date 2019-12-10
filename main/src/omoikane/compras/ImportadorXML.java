@@ -73,9 +73,9 @@ public class ImportadorXML {
                 Element element = (Element) node;
 
                 mapa = new HashMap<>();
-                mapa.put("noIdentificacion", element.getAttribute("noIdentificacion"));
-                mapa.put("valorUnitario", element.getAttribute("valorUnitario"));
-                mapa.put("cantidad", element.getAttribute("cantidad"));
+                mapa.put("NoIdentificacion", element.getAttribute("NoIdentificacion"));
+                mapa.put("ValorUnitario", element.getAttribute("ValorUnitario"));
+                mapa.put("Cantidad", element.getAttribute("Cantidad"));
                 list.add(mapa);
             }
         }
@@ -136,9 +136,9 @@ public class ImportadorXML {
 
         for(HashMap<String, String> row : rawData) {
 
-            BigDecimal cantidad = new BigDecimal(row.get("cantidad"));
-            String codigo = row.get("noIdentificacion");
-            BigDecimal valorUnitario = new BigDecimal(row.get("valorUnitario"));
+            BigDecimal cantidad = new BigDecimal(row.get("Cantidad"));
+            String codigo = row.get("NoIdentificacion");
+            BigDecimal valorUnitario = new BigDecimal(row.get("ValorUnitario"));
 
             Articulo a = getController().getLogic().getArticulo(codigo);
             if (a == null)

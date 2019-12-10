@@ -8,6 +8,7 @@
 package omoikane.principal
 
 import omoikane.sistema.*
+ import omoikane.sistema.seguridad.RespuestaLogin
  import org.apache.log4j.Logger
 
  import javax.swing.table.*
@@ -184,7 +185,8 @@ class Caja implements Serializable {
     static def btnMovimientosAction() {
 
         def panel  = new omoikane.formularios.PanelMovimientosCaja()
-        if(omoikane.sistema.Usuarios.autentifica(PMA_MOVIMIENTOSCAJA)) {
+        RespuestaLogin specialLogin = omoikane.sistema.Usuarios.identificaPersona()
+        if(specialLogin.cerrojo(PMA_MOVIMIENTOSCAJA)) {
             try {
 
                 panel.setVisible(true)
@@ -198,12 +200,16 @@ class Caja implements Serializable {
                 movServ.desconectar()
 
                 def contexto = new EstrategiaEstandar();
-                def ventas= contexto.obtenerSumaCaja(IDCaja, sdf.format(horas.horaAbierta), 'CURRENT_TIMESTAMP')
+
+                def ventas = [nVentas: 0.0, total: 0.0, retiros: 0.0, depositos: 0.0]
+                if(specialLogin.cerrojo(PMA_SUMA_MOVIMIENTOSCAJA)) {
+                    ventas = contexto.obtenerSumaCaja(IDCaja, sdf.format(horas.horaAbierta), 'NOW()')
+                }
 
                 panel.txtNVentas.text   = ventas.nVentas
-                panel.txtVentas.text    = ventas.total
-                panel.txtRetiros.text   = ventas.retiros
-                panel.txtDepositos.text = ventas.depositos
+                panel.txtVentas.text    = String.format("%,.2f", ventas.total)
+                panel.txtRetiros.text   = String.format("%,.2f", ventas.retiros)
+                panel.txtDepositos.text = String.format("%,.2f", ventas.depositos)
 
                 panel.btnRetiro.actionPerformed = {
                     Thread.start {

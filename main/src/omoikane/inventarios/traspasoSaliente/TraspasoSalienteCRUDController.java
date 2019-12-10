@@ -23,6 +23,8 @@ import omoikane.sistema.SceneOverloaded;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.synyx.hades.domain.Order;
+import org.synyx.hades.domain.PageRequest;
+import org.synyx.hades.domain.Pageable;
 import org.synyx.hades.domain.Sort;
 
 import javax.swing.*;
@@ -61,7 +63,8 @@ public class TraspasoSalienteCRUDController
 
     @FXML
     public void onRecargar() {
-        List<TraspasoSaliente> traspasoSalienteList = traspasoSalienteRepo.readAll( new Sort(Order.DESCENDING, "fecha") );
+        Pageable pageable = new PageRequest(0, 1000, new Sort(Order.DESCENDING, "fecha"));
+        List<TraspasoSaliente> traspasoSalienteList = traspasoSalienteRepo.readAll( pageable ).asList();
         lista.setItems(FXCollections.observableArrayList(traspasoSalienteList));
     }
 
@@ -78,7 +81,8 @@ public class TraspasoSalienteCRUDController
         AnchorPane.setRightAnchor(view.getRoot(), 0d);
         contenido.getChildren().setAll(view.getRoot());
 
-        List<TraspasoSaliente> traspasoSalienteList = traspasoSalienteRepo.readAll( new Sort(Order.DESCENDING, "fecha") );
+        Pageable pageable = new PageRequest(0, 1000, new Sort(Order.DESCENDING, "fecha"));
+        List<TraspasoSaliente> traspasoSalienteList = traspasoSalienteRepo.readAll( pageable ).asList();
         lista.setItems(FXCollections.observableArrayList(traspasoSalienteList));
 
         traspasoSalienteController = (TraspasoSalienteController) ((SceneOverloaded)view).getController();

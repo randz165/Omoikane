@@ -26,7 +26,9 @@ WHERE
  AND ventas.fecha_hora <= $P{FHasta}
  AND ventas_detalles.id_linea = $P{Lineas}
 GROUP BY
-     articulos_codigo]]>
+     articulos_codigo
+ORDER BY
+	articulos_descripcion DESC, total_suma DESC]]>
 	</queryString>
 	<field name="cantidad_suma" class="java.lang.Double">
 		<fieldDescription><![CDATA[]]></fieldDescription>

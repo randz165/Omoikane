@@ -322,7 +322,7 @@ CREATE TABLE IF NOT EXISTS `cortes` (
   KEY `Index_2` (`fecha_hora`,`id_caja`,`id_almacen`),
   KEY `Index_3` (`fecha_hora`,`id_caja`),
   KEY `Index_4` (`fecha_hora`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
 
@@ -351,7 +351,7 @@ CREATE TABLE IF NOT EXISTS `cortes_dual` (
   KEY `Index_3` (`id_caja`,`id_almacen`,`fecha_hora`),
   KEY `Index_4` (`id_caja`,`fecha_hora`),
   KEY `Index_5` (`fecha_hora`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
 
@@ -432,7 +432,7 @@ CREATE TABLE IF NOT EXISTS `movimientos_almacen` (
   `folio` text COLLATE latin1_spanish_ci NOT NULL,
   `creacion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_movimiento`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci ROW_FORMAT=FIXED;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci ;
 
 -- --------------------------------------------------------
 
@@ -448,7 +448,7 @@ CREATE TABLE IF NOT EXISTS `movimientos_almacen_detalles` (
   `id_detalle` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `id_almacen` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id_detalle`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ROW_FORMAT=FIXED;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
 
@@ -596,7 +596,7 @@ CREATE TABLE IF NOT EXISTS `ventas` (
   KEY `Index_2` (`fecha_hora`),
   KEY `Index_3` (`id_venta`,`id_caja`,`id_almacen`,`fecha_hora`),
   KEY `ParaVentasPersistentes` (`completada`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci ROW_FORMAT=FIXED;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
 -- --------------------------------------------------------
 

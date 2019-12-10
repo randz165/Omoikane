@@ -72,7 +72,7 @@ class ArticulosFunciones {
         } finally { if(db!=null) { db.close() } }
 
     }
-    static def addArticulo = { IDAlmacen, IDLinea, IDGrupo, departamentoID, claveUnidadSat, claveProductoSat, codigo, descripcion, costo, descuento, utilidad, existencias ->
+    static def addArticulo = { IDAlmacen, IDLinea, IDGrupo, departamentoID, String unidad, claveUnidadSat, claveProductoSat, codigo, descripcion, costo, descuento, utilidad, existencias ->
         def db
         try {
             db = Db.connect()
@@ -86,6 +86,7 @@ class ArticulosFunciones {
                                     id_grupo = ?,
                                     departamento_id = ?,
                                     descripcion = ?,
+                                    unidad = ?,
                                     CLAVE_UNIDAD_SAT_CLAVE = ?,
                                     CLAVE_PRODUCTO_SAT_CLAVE = ?,
                                     uModificacion = CURRENT_TIMESTAMP; """,
@@ -95,6 +96,7 @@ class ArticulosFunciones {
                                 IDGrupo,
                                 departamentoID,
                                 descripcion,
+                                unidad,
                                 claveUnidadSat,
                                 claveProductoSat
                         ]);
@@ -117,12 +119,27 @@ class ArticulosFunciones {
             throw new Exception("Error en la conexión del servidor con su base de datos", e)
         }
     }
-    static def modArticulo = { IDAlmacen, IDArticulo, codigo, IDLinea, IDGrupo, departamentoID, claveUnidadSat, claveProductoSat, descripcion, unidad, costo, utilidad, descuento ->
+    static def modArticulo = { IDAlmacen, IDArticulo, codigo, IDLinea, IDGrupo, departamentoID, String unidad, claveUnidadSat, claveProductoSat, descripcion, costo, utilidad, descuento ->
         def db   = Db.connect()
         try {
           db.connection.autoCommit = false
-          db.executeUpdate("UPDATE articulos SET codigo = ?, id_linea = ?, id_grupo = ?, departamento_id = ?, CLAVE_UNIDAD_SAT_CLAVE = ?, CLAVE_PRODUCTO_SAT_CLAVE = ?, descripcion = ?, unidad = ?, uModificacion = CURRENT_TIMESTAMP WHERE id_articulo = ?"
-                           , [codigo, IDLinea, IDGrupo, departamentoID, claveUnidadSat, claveProductoSat, descripcion, unidad, IDArticulo])
+          db.executeUpdate(
+                  """UPDATE articulos 
+                        SET 
+                            codigo = ?, 
+                            id_linea = ?, 
+                            id_grupo = ?, 
+                            departamento_id = ?, 
+                            unidad = ?,
+                            CLAVE_UNIDAD_SAT_CLAVE = ?, 
+                            CLAVE_PRODUCTO_SAT_CLAVE = ?, 
+                            descripcion = ?, 
+                            uModificacion = CURRENT_TIMESTAMP 
+                        WHERE id_articulo = ?"""
+                           , [codigo, IDLinea, IDGrupo, departamentoID,
+                              unidad,
+                              claveUnidadSat,
+                              claveProductoSat, descripcion, IDArticulo])
 
           ArticulosFunciones.modPrecio(IDAlmacen, IDArticulo, costo:costo as Double, utilidad:utilidad  as Double, descuento:descuento as Double)
           db.commit()

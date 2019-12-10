@@ -51,9 +51,9 @@ public class CajaModel {
         getEfectivo ().get().setScale( 2, BigDecimal.ROUND_HALF_UP );
         getCambio   ().get().setScale( 2, BigDecimal.ROUND_HALF_UP );
 
-        ObservableList<ProductoModel> list = FXCollections.observableArrayList();
+        ObservableList<ProductoModel> list = FXCollections.synchronizedObservableList(FXCollections.observableArrayList());
         setVenta(list);
-        ObservableList<ProductoModel> productos = FXCollections.observableArrayList();
+        ObservableList<ProductoModel> productos = FXCollections.synchronizedObservableList(FXCollections.observableArrayList());
         setProductos(productos);
     }
 

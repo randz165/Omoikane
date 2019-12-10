@@ -31,10 +31,11 @@ class Reporte {
         try {
             def db     = Sql.newInstance(omoikane.principal.Principal.URLMySQL, omoikane.principal.Principal.loginJasper, omoikane.principal.Principal.passJasper, "com.mysql.jdbc.Driver")
             //def db     = Sql.newInstance(omoikane.principal.Principal.url, "root", "", "com.mysql.jdbc.Driver")
-            def stream = cargarPlantilla(reporteJasper)
+            def stream = reporteJasper.contains(".jrxml") ? cargarYCompilarJXML(reporteJasper) : cargarPlantilla(reporteJasper)
             jp         = JasperFillManager.fillReport(stream, params, db.connection);
             db.close()
         } catch(Exception e) {
+            e.printStackTrace()
             omoikane.sistema.Dialogos.lanzarDialogoError(null, "Error generando reporte desde base de datos", omoikane.sistema.Herramientas.getStackTraceString(e))
         }
     }
@@ -48,7 +49,7 @@ class Reporte {
         }
     }
 
-    Reporte(String reporteJasper,java.util.List matriz, boolean compilar = false)
+    Reporte(String reporteJasper, java.util.List matriz, boolean compilar = false)
     {
         try {
             def stream
@@ -76,7 +77,8 @@ class Reporte {
     def cargarYCompilarJXML(String reporteURL)
     {
         def stream = cargarPlantilla(reporteURL)
-        JasperReport report = JasperCompileManager.compileReport(reporteURL);
+        //JasperReport report = JasperCompileManager.compileReport(reporteURL);
+        JasperReport report = JasperCompileManager.compileReport(stream);
         return report;
     }
 

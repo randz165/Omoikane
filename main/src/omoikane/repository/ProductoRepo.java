@@ -45,7 +45,7 @@ public interface ProductoRepo extends GenericDao<Articulo, Long>
     @Query("SELECT a FROM Articulo a JOIN FETCH a.baseParaPrecio WHERE a.activo = 1")
     List<Articulo> findAll();
 
-    @Query("SELECT a FROM Articulo a JOIN FETCH a.baseParaPrecio JOIN FETCH a.stock WHERE a.activo = 1")
+    @Query("SELECT a FROM Articulo a JOIN FETCH a.baseParaPrecio JOIN FETCH a.stock LEFT JOIN FETCH a.impuestos WHERE a.activo = 1")
     List<Articulo> findAllIncludingStock();
 
     @Query("SELECT a FROM Articulo a JOIN FETCH a.stock JOIN FETCH a.baseParaPrecio WHERE (a.descripcion like ?1 OR a.codigo like ?1) AND a.activo = 1")

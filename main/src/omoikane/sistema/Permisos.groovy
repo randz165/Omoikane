@@ -88,6 +88,7 @@ class Permisos {
     static Float PMA_ABRIRCAJAS            = SUPERVISOR //INICIAR VENTAS EN CAJA
     static Float PMA_VENTAESPECIAL         = GERENTE
     static Float PMA_MOVIMIENTOSCAJA       = SUPERVISOR
+    static Float PMA_SUMA_MOVIMIENTOSCAJA  = GERENTE
 
     static Float PMA_IMPUESTOSCRUD         = GERENTE;
 

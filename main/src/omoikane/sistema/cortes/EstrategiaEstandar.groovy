@@ -94,6 +94,8 @@ public class EstrategiaEstandar extends EstrategiasCorte {
         def db;
         try {
             db = Db.connect()
+            if(hasta.equalsIgnoreCase("NOW()"))
+                hasta = db.firstRow("SELECT NOW();")["NOW()"]
             def ventas = db.firstRow("""SELECT count(id_venta) as nVentas, sum(subtotal) as subtotal, sum(impuestos) as impuestos,
                                     sum(descuento) as descuento, sum(total) as total FROM ventas WHERE id_caja = ?
                                     AND fecha_hora >= ? AND fecha_hora <= ? AND completada = 1""", [IDCaja, desde, hasta])

@@ -5,7 +5,7 @@ apply plugin: 'application'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
-version = '4.4.0'
+version = '4.5.4'
 
 def title			= "Omoikane"
 mainClassName       = "omoikane.principal.MainJava"
@@ -15,6 +15,14 @@ sourceCompatibility = 1.8
 // wyUpdateCompiler    = 'c:\\Program Files (x86)\\wyBuild\\wybuild.cmd.exe'
 def versionNotes        = 
     """
+		Versión 4.5.4
+			- Corregí leak ancestral en catálogo de productos, se aceleró un poco y ya no va a acumular memoria
+			- Reduje la cantidad de log que se genera cuando ocurren errores de casting en el catálogo, los errores se ignoraban pero el logueo de todo el stacktrace ralentizaba la carga. Desconozco si el comportamiento de esas excepciones es esperado.
+			- Hice mejoras de formato en el reporte de traspaso saliente
+			- Optimicé los tiempos de carga de los CRUD de traspaso entrante y saliente mostrando solo los últimos 1000 traspasos
+		Versión 4.5.3
+			- Corrección de NPE en caja por lista que no soportaba operaciones concurrentes.
+			- Formato de traspaso saliente ahora tiene columna "Impuestos".
 		Versión 4.1.0
 		Novedades:
 			- Soporte multi-impuesto
@@ -210,6 +218,9 @@ dependencies {
 
 
 jar {
+	from('main/java') {
+		include 'config/**/*.xml'
+	}
     manifest {
 	    def manifestClasspath = configurations.runtime.collect { "lib/"+it.getName() }.join(' ') 
 	              
@@ -220,7 +231,7 @@ jar {
     }
 }
 
-task distribuir(dependsOn: 'installApp') {
+task distribuir(dependsOn: 'installDist') {
 	def miDistDir        = new File("dist")
 
     ant.propertyfile(

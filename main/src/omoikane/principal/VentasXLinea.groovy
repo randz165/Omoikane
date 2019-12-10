@@ -35,7 +35,7 @@ class VentasXLinea {
             list = (String) (form.getLineas()*.id)
             list=list.replace('[','')
             list=list.replace(']','')
-            def reporte = new Reporte('omoikane/reportes/VentasXLinea.jasper', [FDesde:form.getFechaDesde(),FHasta:form.getFechaHasta(),Lineas:list]);
+            def reporte = new Reporte('omoikane/reportes/VentasXLinea.jrxml', [FDesde:form.getFechaDesde(),FHasta:form.getFechaHasta(),Lineas:list], true);
             reporte.lanzarPreview()
         }
 

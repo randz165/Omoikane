@@ -356,7 +356,7 @@ public class CatalogoClaveUnidadSat extends JInternalFrame {
         String[] columnas = {"Clave", "Nombre", "Descripcion", "Símbolo"};
         this.tablaGrupos.setModel(new DefaultTableModel());
         ((DefaultTableModel)this.tablaGrupos.getModel()).setColumnIdentifiers(columnas);
-        omoikane.principal.Grupos.poblarGrupos(this.tablaGrupos,txtBusqueda.getText());
+        omoikane.principal.ClaveUnidadSat.poblar(this.tablaGrupos,txtBusqueda.getText());
     }
 
     public void paintComponent(Graphics g)

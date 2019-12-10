@@ -13,6 +13,7 @@ package omoikane.formularios;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.*;
 import javax.swing.table.*;
@@ -611,26 +612,54 @@ public class CatalogoArticulos extends OmJInternalFrame {
         String query = getMainQuery();
 
         
-        if(xCodDes || xLineas || xGrupos) { query += " AND "; }
+        if(xCodDes || xLineas || xGrupos) { query = MessageFormat.format("{0} AND ", query); }
         if(xCodDes) {
-                query += " a.id_articulo IN (" +
-                        "SELECT a.id_articulo FROM articulos a LEFT JOIN codigo_producto as b ON a.id_articulo = b.producto_id_articulo WHERE " +
-                        "(a.descripcion like '%"+busqueda+"%' or " +
-                        "a.codigo like '%"+busqueda+"%' or " +
-                        "b.codigo like '%"+busqueda+"%')) ";
+                query = MessageFormat.format("{0} a.id_articulo IN (SELECT a.id_articulo FROM articulos a LEFT JOIN codigo_producto as b ON a.id_articulo = b.producto_id_articulo WHERE (a.descripcion like ''%{1}%'' or a.codigo like ''%{2}%'' or b.codigo like ''%{3}%'')) ", query, busqueda, busqueda, busqueda);
         }
-        if(xCodDes && (xLineas || xGrupos)) { query += "OR "; }
+        if(xCodDes && (xLineas || xGrupos)) { query = MessageFormat.format("{0}OR ", query); }
         if(xLineas) {
-                query += "(l.descripcion like '%"+busqueda+"%' ) ";
+                query = MessageFormat.format("{0} (l.descripcion like ''%{1}%'' ) ", query, busqueda);
         }
-        if((xLineas||xCodDes) && xGrupos) { query += "OR "; }
+        if((xLineas||xCodDes) && xGrupos) { query = MessageFormat.format("{0}OR ", query); }
         if(xGrupos) {
-                query += "(g.descripcion like '%"+busqueda+"%' ) ";
+                query = MessageFormat.format("{0} (g.descripcion like ''%{1}%'' ) ", query, busqueda);
         }
-        query += "GROUP BY a.id_articulo ";
+        query = MessageFormat.format("{0}GROUP BY a.id_articulo ", query);
         
         setQueryTable(query);
     }
+
+    public String getReportFilteredQuery()
+    {
+        String query = "SELECT a.id_articulo AS xID, a.`codigo` AS xCodigo, p.porcentajeUtilidad as `xCoeficienteUtilidad`, p.porcentajeDescuentoProducto as `xCoeficienteDescuentoProducto`, p.porcentajeDescuentoLinea as `xCoeficienteDescuentoLinea`, p.porcentajeDescuentoGrupo as `xCoeficienteDescuentoGrupo`, CONCAT( IF(porcentajeDescuentoLinea > 0, CONCAT('Linea: ',porcentajeDescuentoLinea,'%'), ''), IF(porcentajeDescuentoGrupo > 0, CONCAT('Grupo: ',porcentajeDescuentoGrupo,'%'), ''), IF(porcentajeDescuentoProducto > 0, CONCAT('Producto: ',porcentajeDescuentoProducto,'%'), '')) xDescuentos, a.descripcion AS xDescripcion, a.`unidad` AS xUnidad, (SELECT GROUP_CONCAT(i.descripcion) FROM articulos_Impuesto ai JOIN Impuesto i ON ai.impuestos_id = i.id WHERE a.id_articulo = ai.articulos_id_articulo) xImpuestos, (SELECT @sumImpuestos := SUM(i.porcentaje) FROM articulos_Impuesto ai JOIN Impuesto i ON ai.impuestos_id = i.id WHERE a.id_articulo = ai.articulos_id_articulo) sumImpuestos, l.`descripcion` AS xLinea, l.`descripcion` AS xLinea, p.`costo` AS xCosto, @bpp := p.costo + (p.costo*(p.porcentajeUtilidad/100)) as bpp, @coefDesc := 1-(((p.porcentajeDescuentoProducto/100)-1)*((p.porcentajeDescuentoLinea/100)-1)*((p.porcentajeDescuentoGrupo/100)-1)*-1) as coefDesc, @montoImpuestos := (@bpp-(@bpp*@coefDesc))*(@sumImpuestos/100) montoImpuestos, @bpp-(@bpp*@coefDesc)+@montoImpuestos xPrecio FROM articulos a,base_para_precios p,lineas l, grupos g WHERE a.id_articulo = p.id_articulo AND a.id_linea = l.id_linea AND a.id_grupo = g.id_grupo AND a.activo = 1 AND p.id_articulo = a.id_articulo ";
+
+        boolean xCodDes = getBuscarCodigoDescripcion();
+        boolean xLineas = getBuscarLineas();
+        boolean xGrupos = getBuscarGrupos();
+        String busqueda = this.txtBusqueda.getText();
+
+        //Limpia la cadena de búsqueda
+        busqueda = StringEscapeUtils.escapeSql(busqueda);
+
+        if(busqueda==null) { xCodDes = xLineas = xGrupos = false; }
+
+        if(xCodDes || xLineas || xGrupos) { query = MessageFormat.format("{0} AND ", query); }
+        if(xCodDes) {
+            query = MessageFormat.format("{0} a.id_articulo IN (SELECT a.id_articulo FROM articulos a LEFT JOIN codigo_producto as b ON a.id_articulo = b.producto_id_articulo WHERE (a.descripcion like ''%{1}%'' or a.codigo like ''%{2}%'' or b.codigo like ''%{3}%'')) ", query, busqueda, busqueda, busqueda);
+        }
+        if(xCodDes && (xLineas || xGrupos)) { query = MessageFormat.format("{0}OR ", query); }
+        if(xLineas) {
+            query = MessageFormat.format("{0}(l.descripcion like ''%{1}%'' ) ", query, busqueda);
+        }
+        if((xLineas||xCodDes) && xGrupos) { query = MessageFormat.format("{0}OR ", query); }
+        if(xGrupos) {
+            query = MessageFormat.format("{0}(g.descripcion like ''%{1}%'' ) ", query, busqueda);
+        }
+        query = MessageFormat.format("{0}GROUP BY a.id_articulo ", query);
+
+        return query;
+    }
+
     Rectangle lastBounds;
     public Boolean areSameBounds(Rectangle r) {
         if(lastBounds == null) { lastBounds = r; return false; }
@@ -708,6 +737,8 @@ class ArticulosTableModel extends ScrollableTableModel {
 
                 return numberFormat.format(precioOmoikaneLogic.getPrecio());
             } catch(ClassCastException cce) {
+                //cce.printStackTrace();
+                System.out.println("Error(1): No se pudo hacer cast en CatalogoArticulo.getValueAt");
                 return "ERROR(1)";
             }
         } else if(col == 6) {
@@ -716,6 +747,8 @@ class ArticulosTableModel extends ScrollableTableModel {
                 String display = existencias.compareTo(BigDecimal.ZERO) <= 0 ? "N/D" : numberFormat.format(existencias);
                 return display;
             } catch(Exception e) {
+                //e.printStackTrace();
+                System.out.println("Error(2) Al intentar generar la sexta columna del catálogo (existencias).");
                 return "ERROR(2)";
             }
         } else {

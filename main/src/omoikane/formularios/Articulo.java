@@ -96,12 +96,14 @@ public class Articulo extends javax.swing.JInternalFrame {
         txtIDLinea = new javax.swing.JTextField();
         txtIDLineaDes = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
-        comboDepartamento = new javax.swing.JComboBox();
+        txtUnidad = new javax.swing.JComboBox();
         txtClaveUnidadSat = new javax.swing.JTextField();
         txtClaveUnidadSatDes = new javax.swing.JTextField();
         txtClaveProductoSatDes = new javax.swing.JTextField();
         txtClaveProductoSat = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        comboDepartamento = new javax.swing.JComboBox();
         jPanel5 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
@@ -201,8 +203,8 @@ public class Articulo extends javax.swing.JInternalFrame {
 
         jLabel4.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(204, 204, 204));
-        jLabel4.setText("<html>Descripci&oacute;n:</html>");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, 90, 30));
+        jLabel4.setText("<html>Unidad:</html>");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, 90, 30));
 
         txtDescripcion.setEditable(false);
         txtDescripcion.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -211,7 +213,7 @@ public class Articulo extends javax.swing.JInternalFrame {
         jLabel5.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(204, 204, 204));
         jLabel5.setText("Clave SAT:");
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 290, 90, 30));
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 330, 90, 30));
 
         txtPrecio.setEditable(false);
         txtPrecio.setBackground(new java.awt.Color(51, 51, 51));
@@ -220,33 +222,33 @@ public class Articulo extends javax.swing.JInternalFrame {
         txtPrecio.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txtPrecio.setText("0.0");
         txtPrecio.setBorder(null);
-        jPanel1.add(txtPrecio, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 370, 340, 30));
+        jPanel1.add(txtPrecio, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 410, 340, 30));
 
         jLabel12.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(204, 204, 204));
         jLabel12.setText("Precio:");
-        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 370, -1, 30));
+        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 410, -1, 30));
 
         jLabel7.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(204, 204, 204));
         jLabel7.setText("<html>&Uacute;ltima<br>Modificaci&oacute;n:</html>");
-        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 410, -1, -1));
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 370, -1, -1));
 
         txtUModificacion.setEditable(false);
         txtUModificacion.setBackground(new java.awt.Color(51, 51, 51));
-        txtUModificacion.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        txtUModificacion.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         txtUModificacion.setForeground(new java.awt.Color(255, 255, 255));
         txtUModificacion.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txtUModificacion.setText("Sin fecha");
         txtUModificacion.setBorder(null);
         txtUModificacion.setFocusable(false);
-        jPanel1.add(txtUModificacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 410, 340, 30));
+        jPanel1.add(txtUModificacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 370, 130, 30));
         jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, -40, -1, 20));
 
         jLabel19.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel19.setForeground(new java.awt.Color(204, 204, 204));
         jLabel19.setText("Descuento:");
-        jPanel1.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 330, -1, 30));
+        jPanel1.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 370, -1, 30));
 
         txtDescuento.setEditable(false);
         txtDescuento.setBackground(new java.awt.Color(51, 51, 51));
@@ -255,7 +257,7 @@ public class Articulo extends javax.swing.JInternalFrame {
         txtDescuento.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txtDescuento.setText("0.0");
         txtDescuento.setBorder(null);
-        jPanel1.add(txtDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 330, 340, 30));
+        jPanel1.add(txtDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 370, 120, 30));
 
         txtIDGrupo.setEditable(false);
         txtIDGrupo.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -287,34 +289,42 @@ public class Articulo extends javax.swing.JInternalFrame {
         jLabel10.setText("ID Grupo [F1] :");
         jPanel1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 90, 30));
 
-        jPanel1.add(comboDepartamento, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 170, 340, 30));
+        txtUnidad.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "PZA", "CAJA", "PAQ", "KG", "LT", "BULTO " }));
+        jPanel1.add(txtUnidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 250, 340, 30));
 
-        txtClaveUnidadSat.setEditable(true);
+        txtClaveUnidadSat.setEditable(false);
         txtClaveUnidadSat.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jPanel1.add(txtClaveUnidadSat, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 250, 40, 30));
+        jPanel1.add(txtClaveUnidadSat, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 290, 40, 30));
 
         txtClaveUnidadSatDes.setEditable(false);
         txtClaveUnidadSatDes.setBackground(new java.awt.Color(51, 51, 51));
         txtClaveUnidadSatDes.setForeground(new java.awt.Color(255, 255, 255));
         txtClaveUnidadSatDes.setBorder(null);
         txtClaveUnidadSatDes.setFocusable(false);
-        jPanel1.add(txtClaveUnidadSatDes, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 250, 290, 30));
+        jPanel1.add(txtClaveUnidadSatDes, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 290, 290, 30));
 
         txtClaveProductoSatDes.setEditable(false);
         txtClaveProductoSatDes.setBackground(new java.awt.Color(51, 51, 51));
         txtClaveProductoSatDes.setForeground(new java.awt.Color(255, 255, 255));
         txtClaveProductoSatDes.setBorder(null);
         txtClaveProductoSatDes.setFocusable(false);
-        jPanel1.add(txtClaveProductoSatDes, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 290, 290, 30));
+        jPanel1.add(txtClaveProductoSatDes, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 330, 290, 30));
 
-        txtClaveProductoSat.setEditable(true);
+        txtClaveProductoSat.setEditable(false);
         txtClaveProductoSat.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jPanel1.add(txtClaveProductoSat, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 290, 40, 30));
+        jPanel1.add(txtClaveProductoSat, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 330, 40, 30));
 
         jLabel6.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(204, 204, 204));
         jLabel6.setText("Unidad SAT:");
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 250, 90, 30));
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 290, 90, 30));
+
+        jLabel14.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel14.setText("<html>Descripci&oacute;n:</html>");
+        jPanel1.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, 90, 30));
+
+        jPanel1.add(comboDepartamento, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 170, 340, 30));
 
         tabbedPane.addTab("<html>General</html>", jPanel1);
 
@@ -583,8 +593,10 @@ public class Articulo extends javax.swing.JInternalFrame {
         this.txtIDLinea.setEditable(editable);
         this.txtPrecioTotal.setEditable(editable);
         this.txtClaveUnidadSat.setEnabled(editable);
+        this.txtClaveUnidadSat.setEditable(editable);
         this.txtClaveProductoSat.setEnabled(editable);
-        this.comboDepartamento.setEnabled(editable);
+        this.txtClaveProductoSat.setEditable(editable);
+        this.txtUnidad.setEnabled(editable);
         this.txtUtilidad.setEditable(editable);
         this.txtUtilidadPorc.setEditable(editable);
 
@@ -649,6 +661,7 @@ public class Articulo extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
@@ -727,6 +740,7 @@ public class Articulo extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtPrecio;
     private javax.swing.JFormattedTextField txtPrecioTotal;
     private javax.swing.JTextField txtUModificacion;
+    private javax.swing.JComboBox txtUnidad;
     private javax.swing.JTextField txtUtilidad;
     private javax.swing.JFormattedTextField txtUtilidadPorc;
     // End of variables declaration//GEN-END:variables
@@ -897,7 +911,14 @@ public class Articulo extends javax.swing.JInternalFrame {
         g2d.drawImage(fondo, 0, 0, null);
 
     }
+    
+    public String getTxtUnidad() {
+        return String.valueOf(txtUnidad.getSelectedItem());
+    }
 
+    public void setTxtUnidad(String txt) {
+        this.txtUnidad.setSelectedItem(txt);
+    }
     public void generarFondo(Component componente) {
         Rectangle areaDibujo = this.getBounds();
         BufferedImage tmp;

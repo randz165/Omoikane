@@ -33,6 +33,7 @@ import javafx.util.converter.DefaultStringConverter;
 import name.antonsmirnov.javafx.dialog.Dialog;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
+import net.sf.dynamicreports.report.builder.style.StyleBuilders;
 import net.sf.dynamicreports.report.constant.HorizontalAlignment;
 import net.sf.dynamicreports.report.exception.DRException;
 import omoikane.entities.Usuario;
@@ -65,10 +66,12 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.*;
 
@@ -196,6 +199,12 @@ public class TraspasoSalienteController implements Initializable {
     // -------------------------------------------------
 
     @FXML public void onImprimir(ActionEvent actionEvent) {
+
+        NumberFormat nf = NumberFormat.getNumberInstance();
+        nf.setMinimumFractionDigits(2);
+        nf.setMaximumFractionDigits(2);
+        nf.setGroupingUsed(true);
+
         List<Map<String, Object>> model = new ArrayList<>();
         try {
             for (ItemTraspasoSaliente itemTraspasoSaliente : modelo._traspasoSaliente.getItems()) {
@@ -206,10 +215,20 @@ public class TraspasoSalienteController implements Initializable {
                 mapa.put("existencia", itemTraspasoSaliente.getStockDB());
                 mapa.put("precioUnitario", itemTraspasoSaliente.getPrecioPublico());
                 mapa.put("costoUnitario", itemTraspasoSaliente.getCostoUnitario());
+                Articulo articuloFresco = productoRepo.findByIdComplete(itemTraspasoSaliente.getArticulo().getIdArticulo());
+                mapa.put("impuestos", articuloFresco.getImpuestos().stream().map(e -> e.getDescripcion()).collect(Collectors.joining(", ")));
                 mapa.put("importe", itemTraspasoSaliente.getImporte());
                 model.add(mapa);
             }
             StyleBuilder boldStyle         = stl.style().bold();
+
+            StyleBuilder columnTextStyle         = new StyleBuilders().style().setTopPadding(3).setBottomPadding(3);
+
+            StyleBuilder columnTextSmallStyle         = new StyleBuilders().style(columnTextStyle).setFontSize(6);
+
+            StyleBuilder columnTextSmallCenteredStyle         = new StyleBuilders().style(columnTextStyle).setFontSize(6).setHorizontalAlignment(HorizontalAlignment.CENTER);
+
+            StyleBuilder columnTextNormalStyle         = new StyleBuilders().style(columnTextStyle).setFontSize(9);
 
             StyleBuilder rightStyle        = stl.style().setHorizontalAlignment(HorizontalAlignment.RIGHT);
 
@@ -220,24 +239,29 @@ public class TraspasoSalienteController implements Initializable {
                     .setHorizontalAlignment(HorizontalAlignment.LEFT).setFontSize(18);
 
             StyleBuilder columnTitleStyle  = stl.style(boldCenteredStyle)
+                    .setFontSize(10)
                     .setBorder(stl.pen1Point())
                     .setBackgroundColor(Color.LIGHT_GRAY);
 
-            TextColumnBuilder<BigDecimal> cantidadCol = col.column("Cantidad", "cantidad", type.bigDecimalType());
-            TextColumnBuilder<BigDecimal> existenciaCol = col.column("Stock Sistema", "existencia", type.bigDecimalType());
-            TextColumnBuilder<BigDecimal> costoUnitarioCol = col.column("Costo U.", "costoUnitario", type.bigDecimalType());
+            TextColumnBuilder<BigDecimal> cantidadCol       = col.column("Cantidad", "cantidad", type.bigDecimalType());
+            //TextColumnBuilder<BigDecimal> existenciaCol     = col.column("Stock Sistema", "existencia", type.bigDecimalType());
+            TextColumnBuilder<BigDecimal> costoUnitarioCol  = col.column("Costo U.", "costoUnitario", type.bigDecimalType());
             TextColumnBuilder<BigDecimal> precioUnitarioCol = col.column("Precio U.", "precioUnitario", type.bigDecimalType());
-            TextColumnBuilder<BigDecimal> importeCol = col.column("Importe", "importe", type.bigDecimalType());
+            TextColumnBuilder<String>     impuestosCol      = col.column("Imps.", "impuestos", type.stringType())
+                    .setStyle(columnTextSmallStyle);
+            TextColumnBuilder<BigDecimal> importeCol        = col.column("Importe", "importe", type.bigDecimalType());
+
 
             report()
                     .columns(
-                            col.column("Código", "codigo", type.stringType()).setMinColumns(4),
-                            col.column("Descripción", "descripcion", type.stringType()),
-                            cantidadCol.setMinColumns(2),
-                            existenciaCol.setMinColumns(2),
-                            costoUnitarioCol.setMinColumns(2),
-                            precioUnitarioCol.setMinColumns(2),
-                            importeCol.setMinColumns(3)
+                            col.column("Código", "codigo", type.stringType()).setMinColumns(4).setStyle(columnTextNormalStyle),
+                            col.column("Descripción", "descripcion", type.stringType()).setStyle(columnTextNormalStyle),
+                            cantidadCol.setMinColumns(2).setStyle(columnTextNormalStyle),
+                            //existenciaCol.setMinColumns(2).setStyle(smallStyle8px),
+                            costoUnitarioCol.setMinColumns(2).setStyle(columnTextNormalStyle),
+                            precioUnitarioCol.setMinColumns(2).setStyle(columnTextNormalStyle),
+                            impuestosCol.setMinColumns(2).setStyle(columnTextSmallCenteredStyle),
+                            importeCol.setMinColumns(3).setStyle(columnTextNormalStyle)
 
                     )
                     .setColumnTitleStyle(columnTitleStyle)
@@ -245,19 +269,19 @@ public class TraspasoSalienteController implements Initializable {
                     .setDataSource(model)
                     .title(
                             cmp.horizontalList().add(
-                                cmp.verticalList().add(
-                                    cmp.text("Traspaso saliente de mercancía").setStyle(boldCenteredStyle2).setWidth(300),
-                                    cmp.text("Almacén origen: " + almacenOrigen.textProperty().get()),
-                                    cmp.text("Almacén destino: " + almacenDestino.textProperty().get())
-                                ),
-                                cmp.verticalList().add(
-                                    cmp.text(fechaLabel.textProperty().get()).setHorizontalAlignment(HorizontalAlignment.RIGHT),
-                                    cmp.text("Folio: " + idLabel.textProperty().get()).setHorizontalAlignment(HorizontalAlignment.RIGHT),
-                                    bcode.code128(uid.textProperty().get()) .setHeight(30).setStyle(rightStyle)
-                                )
+                                    cmp.verticalList().add(
+                                            cmp.text("Traspaso saliente de mercancía").setStyle(boldCenteredStyle2).setWidth(300),
+                                            cmp.text("Almacén origen: " + almacenOrigen.textProperty().get()),
+                                            cmp.text("Almacén destino: " + almacenDestino.textProperty().get())
+                                    ),
+                                    cmp.verticalList().add(
+                                            cmp.text(fechaLabel.textProperty().get()).setHorizontalAlignment(HorizontalAlignment.RIGHT),
+                                            cmp.text("Folio: " + idLabel.textProperty().get()).setHorizontalAlignment(HorizontalAlignment.RIGHT),
+                                            bcode.code128(uid.textProperty().get()) .setHeight(30).setStyle(rightStyle)
+                                    )
                             )
                     )
-                    .subtotalsAtSummary(sbt.sum(importeCol))
+                    .subtotalsAtSummary(sbt.sum(importeCol).setPattern("#,##0.00"))
                     .addSummary(cmp.verticalList(
                             cmp.verticalGap(30),
                             cmp.horizontalList(

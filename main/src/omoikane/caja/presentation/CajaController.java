@@ -599,7 +599,9 @@ public class CajaController
                 try { this.wait(500); } catch(Exception e) { Dialogos.lanzarDialogoError(null, "Error en el timer de búsqueda automática", Herramientas.getStackTraceString(e)); }
                 if(busquedaActiva && cc.modelo != null) {
                     getModel().setPaginacionBusqueda(new PageRequest(0,10));
-                    cc.getCajaLogic().buscar(cc.getModel());
+                    if(cc != null && cc.getCajaLogic() != null && cc.getModel() != null){
+                        cc.getCajaLogic().buscar(cc.getModel());
+                    }
                 }
             }
         }

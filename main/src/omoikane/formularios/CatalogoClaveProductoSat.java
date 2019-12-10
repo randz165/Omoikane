@@ -358,7 +358,7 @@ public class CatalogoClaveProductoSat extends JInternalFrame {
         String[] columnas = {"Clave", "Descripcion" };
         this.tablaGrupos.setModel(new DefaultTableModel());
         ((DefaultTableModel)this.tablaGrupos.getModel()).setColumnIdentifiers(columnas);
-        omoikane.principal.Grupos.poblarGrupos(this.tablaGrupos,txtBusqueda.getText());
+        omoikane.principal.ClaveProductoSat.poblar(this.tablaGrupos,txtBusqueda.getText());
     }
 
     public void paintComponent(Graphics g)

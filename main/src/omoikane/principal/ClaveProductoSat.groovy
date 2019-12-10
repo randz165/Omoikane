@@ -26,24 +26,21 @@ class ClaveProductoSat {
       
     static def lanzarCatalogo()
     {
-        if(cerrojo(PMA_ABRIRGRUPO)){
-            def cat = (new CatalogoClaveProductoSat())
-            cat.setVisible(true);
-            cat.jProgressBar1.setIndeterminate(true);
-            escritorio.getPanelEscritorio().add(cat)
-            cat.txtBusqueda.keyReleased = { if(it.keyCode == it.VK_ESCAPE) cat.btnCerrar.doClick() }
-            Herramientas.iconificable(cat)
-            cat.toFront()
-            try { cat.setSelected(true) } catch(Exception e) { Dialogos.lanzarDialogoError(null, "Error al iniciar formulario catálogo de productos y servicios del SAT", Herramientas.getStackTraceString(e)) }
-            cat.txtBusqueda.requestFocus()
+        def cat = (new CatalogoClaveProductoSat())
+        cat.setVisible(true);
+        cat.jProgressBar1.setIndeterminate(true);
+        escritorio.getPanelEscritorio().add(cat)
+        cat.txtBusqueda.keyReleased = { if(it.keyCode == it.VK_ESCAPE) cat.btnCerrar.doClick() }
+        Herramientas.iconificable(cat)
+        cat.toFront()
+        try { cat.setSelected(true) } catch(Exception e) { Dialogos.lanzarDialogoError(null, "Error al iniciar formulario catálogo de productos y servicios del SAT", Herramientas.getStackTraceString(e)) }
+        cat.txtBusqueda.requestFocus()
 
-            Thread.start {
-                poblar(cat.getTablaGrupos(),"")
-                cat.jProgressBar1.setIndeterminate(false);
-            }
-            return cat
-        }else{Dialogos.lanzarAlerta("Acceso Denegado")}
-
+        Thread.start {
+            poblar(cat.getTablaGrupos(),"")
+            cat.jProgressBar1.setIndeterminate(false);
+        }
+        return cat
     }
 
     static def lanzarCatalogoDialogo()
@@ -64,7 +61,7 @@ class ClaveProductoSat {
 
         def dataTabMovs = tablaMovs.getModel()
          try {
-            def movimientos = Nadesico.conectar().getRows(queryGrupos =("SELECT * FROM CLAVE_PRODUCTO_SAT WHERE (CLAVE LIKE '%"+txtBusqueda+"%' OR DESCRIPCION LIKE '%\"+txtBusqueda+\"%')") )
+            def movimientos = Nadesico.conectar().getRows(queryGrupos =("SELECT * FROM CLAVE_PRODUCTO_SAT WHERE (CLAVE LIKE '%"+txtBusqueda+"%' OR DESCRIPCION LIKE '%"+txtBusqueda+"%')") )
             def filaNva = []
 
             movimientos.each {

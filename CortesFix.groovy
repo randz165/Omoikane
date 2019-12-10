@@ -18,7 +18,7 @@ SimpleDateFormat sdf  = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy @ hh:mm:ss a ");
 Calendar         fecha= Calendar.getInstance()
 
-horas = ["horaAbierta":"2016-12-28 07:41:00", "horaCerrada":"2016-12-28 22:00:00"];
+horas = ["horaAbierta":"2019-10-01 07:58:40", "horaCerrada":"2019-10-01 20:07:30"];
 def IDCaja = 1;
 def idAlmacen = 1;
 def cortar = false;

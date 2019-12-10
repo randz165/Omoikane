@@ -153,11 +153,14 @@ public class Articulos
     {
         int confirm = JOptionPane.showConfirmDialog(Principal.getEscritorio().getFrameEscritorio(), "¿Imprimir el catálogo filtrado?", "Impresión de catálogo de artículos", JOptionPane.YES_NO_CANCEL_OPTION);
         if(confirm == JOptionPane.YES_OPTION) {
-            def reporte = new Reporte('omoikane/reportes/ArticulosTodos.jasper',[txtQuery:form.txtQuery]);
+            def reporte = new Reporte('omoikane/reportes/ArticulosTodos.jrxml',[txtQuery:form.getReportFilteredQuery()]);
             reporte.lanzarPreview()
         } else if(confirm == JOptionPane.NO_OPTION) {
-            CatalogoArticulosHandler articulosHandler = Principal.applicationContext.getBean( CatalogoArticulosHandler );
-            articulosHandler.handle();
+            //Versión anterior del catálogo con todos los productos
+            //CatalogoArticulosHandler articulosHandler = Principal.applicationContext.getBean( CatalogoArticulosHandler );
+            //articulosHandler.handle();
+            def reporte = new Reporte('omoikane/reportes/ArticulosTodos.jrxml',[txtQuery: "SELECT a.id_articulo AS xID, a.`codigo` AS xCodigo, p.porcentajeUtilidad as `xCoeficienteUtilidad`, p.porcentajeDescuentoProducto as `xCoeficienteDescuentoProducto`, p.porcentajeDescuentoLinea as `xCoeficienteDescuentoLinea`, p.porcentajeDescuentoGrupo as `xCoeficienteDescuentoGrupo`, CONCAT( IF(porcentajeDescuentoLinea > 0, CONCAT('Linea: ',porcentajeDescuentoLinea,'%'), ''), IF(porcentajeDescuentoGrupo > 0, CONCAT('Grupo: ',porcentajeDescuentoGrupo,'%'), ''), IF(porcentajeDescuentoProducto > 0, CONCAT('Producto: ',porcentajeDescuentoProducto,'%'), '')) xDescuentos, a.descripcion AS xDescripcion, a.`unidad` AS xUnidad, (SELECT GROUP_CONCAT(i.descripcion) FROM articulos_Impuesto ai JOIN Impuesto i ON ai.impuestos_id = i.id WHERE a.id_articulo = ai.articulos_id_articulo) xImpuestos, (SELECT @sumImpuestos := SUM(i.porcentaje) FROM articulos_Impuesto ai JOIN Impuesto i ON ai.impuestos_id = i.id WHERE a.id_articulo = ai.articulos_id_articulo) sumImpuestos, lineas.`descripcion` AS xLinea, lineas.`descripcion` AS xLinea, p.`costo` AS xCosto, @bpp := p.costo + (p.costo*(p.porcentajeUtilidad/100)) as bpp, @coefDesc := 1-(((p.porcentajeDescuentoProducto/100)-1)*((p.porcentajeDescuentoLinea/100)-1)*((p.porcentajeDescuentoGrupo/100)-1)*-1) as coefDesc, @montoImpuestos := (@bpp-(@bpp*@coefDesc))*(@sumImpuestos/100) montoImpuestos, @bpp-(@bpp*@coefDesc)+@montoImpuestos xPrecio FROM articulos a,base_para_precios p,lineas WHERE a.id_articulo = p.id_articulo and a.id_linea = lineas.id_linea and a.activo = 1 AND p.id_articulo = a.id_articulo"]);
+            reporte.lanzarPreview()
         }
 
     }
@@ -266,6 +269,7 @@ public class Articulos
             formArticulo.setTxtIDGrupo       art.idGrupo              as String
             formArticulo.setTxtIDLineaDes    lin.descripcion           as String
             formArticulo.setTxtIDGrupoDes    gru.descripcion           as String
+            formArticulo.setTxtUnidad        art.unidad                as String
 
             formArticulo.getTxtClaveUnidadSat().setText( cus.clave as String )
             formArticulo.getTxtClaveUnidadSatDes().setText( cus.unidad as String )
@@ -331,9 +335,11 @@ public class Articulos
                 def IDLinea          = formArticulo.getTxtIDLinea()
                 def IDGrupo          = formArticulo.getTxtIDGrupo()
                 def descripcion      = formArticulo.getTxtDescripcion()
+                def unidad           = formArticulo.getTxtUnidad()
                 def costo            = formArticulo.getTxtCosto()
                 def descuento        = formArticulo.getTxtDesctoPorcentaje().text
                 def utilidad         = formArticulo.getTxtUtilidadPorc().text
+                def nombreUnidadSat  = formArticulo.getTxtClaveUnidadSatDes().text
                 def claveUnidadSat   = formArticulo.getTxtClaveUnidadSat().text
                 def claveProductoSat = formArticulo.getTxtClaveProductoSat().text
                 def existencias   = 0;
@@ -367,6 +373,7 @@ public class Articulos
                             IDLinea,
                             IDGrupo,
                             departamento.getId(),
+                            unidad,
                             claveUnidadSat,
                             claveProductoSat,
 
@@ -532,8 +539,9 @@ public class Articulos
             def f = formArticulo
             Departamento departamento = f.getComboDepartamento().getSelectedItem();
             def c = [cod:f.getTxtCodigo(), lin:f.getTxtIDLinea(),gru:f.getTxtIDGrupo(), dep: departamento.getId(),des:f.getTxtDescripcion(), cos:f.getTxtCosto(),
-            dto:f.getTxtDesctoPorcentaje().text, uti:f.getTxtUtilidadPorc().text, art:f.getTxtIDArticulo(), notas:f.getTxtComentarios()]
+            dto:f.getTxtDesctoPorcentaje().text, uti:f.getTxtUtilidadPorc().text, art:f.getTxtIDArticulo(), uni:f.getTxtUnidad(), notas:f.getTxtComentarios()]
             def claveUnidadSat   = formArticulo.getTxtClaveUnidadSat().text
+            def nombreUnidadSat   = formArticulo.getTxtClaveUnidadSatDes().text
             def claveProductoSat = formArticulo.getTxtClaveProductoSat().text
 
             Herramientas.verificaCampos {
@@ -553,7 +561,7 @@ public class Articulos
                 if(!serv.getClaveUnidadSat(claveUnidadSat))     throw new Exception("Campo Clave Unidad SAT es inválido")
                 if(!serv.getClaveProductoSat(claveProductoSat)) throw new Exception("Campo Clave Producto SAT es inválido")
 
-                Dialogos.lanzarAlerta(serv.modArticulo(IDAlmacen, c.art, c.cod, c.lin, c.gru, c.dep, claveUnidadSat, claveProductoSat, c.des, c.uni, c.cos, c.uti, c.dto))
+                Dialogos.lanzarAlerta(serv.modArticulo(IDAlmacen, c.art, c.cod, c.lin, c.gru, c.dep, c.uni, claveUnidadSat, claveProductoSat, c.des, c.cos, c.uti, c.dto))
                 serv.modAnotacion(IDAlmacen, c.art, c.notas)
                 serv.desconectar()
                 guardarImpuestos(Long.parseLong( c.art ), ((ImpuestosTableModel)formArticulo.getImpuestosTable().getModel()).getImpuestoList());
