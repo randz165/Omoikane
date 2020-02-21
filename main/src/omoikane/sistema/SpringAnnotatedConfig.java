@@ -18,6 +18,8 @@ import omoikane.inventarios.traspasoEntrante.TraspasoEntranteController;
 import omoikane.inventarios.traspasoSaliente.TraspasoSaliente;
 import omoikane.inventarios.traspasoSaliente.TraspasoSalienteCRUDController;
 import omoikane.inventarios.traspasoSaliente.TraspasoSalienteController;
+import omoikane.multisucursal.ArticuloMultisucursal;
+import omoikane.multisucursal.ArticuloMultisucursalController;
 import omoikane.producto.CodigosController;
 import omoikane.producto.PaqueteController;
 import omoikane.producto.compras.ComprasProductoController;
@@ -49,6 +51,12 @@ public class SpringAnnotatedConfig {
     @Scope("prototype")
     CodigosController codigosController() {
         return new CodigosController();
+    }
+
+    @Bean
+    @Scope("prototype")
+    ArticuloMultisucursalController articuloMultisucursalController() {
+        return new ArticuloMultisucursalController();
     }
 
     @Bean
@@ -167,6 +175,12 @@ public class SpringAnnotatedConfig {
     @Scope("prototype")
     Scene codigosView() {
         return initView("/omoikane/producto/CodigosView.fxml", codigosController());
+    }
+
+    @Bean
+    @Scope("prototype")
+    Scene articuloMultisucursalView() {
+        return initView("/omoikane/multisucursal/articulo-multisucursal-view.fxml", articuloMultisucursalController());
     }
 
     @Bean

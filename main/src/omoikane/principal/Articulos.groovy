@@ -7,6 +7,7 @@ import omoikane.formularios.OmJInternalFrame
 import omoikane.inventarios.Stock
 import omoikane.inventarios.StockLevelsController
 import omoikane.moduloreportes.CatalogoArticulosHandler
+import omoikane.multisucursal.ArticuloMultisucursalController
 import omoikane.principal.*
 import omoikane.producto.CodigosController
 import omoikane.producto.Impuesto
@@ -320,6 +321,7 @@ public class Articulos
 
             addJFXComprasProductoPanel(art, formArticulo);
             addJFXListasDePreciosPanel(art, formArticulo);
+            addJFXArticuloMultisucursal(art, formArticulo);
 
             return formArticulo
             
@@ -467,6 +469,22 @@ public class Articulos
 
                 SceneOverloaded scene = (SceneOverloaded) Principal.applicationContext.getBean("codigosView");
                 ((CodigosController)scene.getController()).setProducto(art);
+                panel.setScene(scene);
+            }
+        });
+    }
+
+    static def addJFXArticuloMultisucursal(omoikane.producto.Articulo art, omoikane.formularios.Articulo a) {
+
+        JFXPanel panel = new JFXPanel();
+        a.tabbedPane.addTab("Sucursales", panel);
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+
+                SceneOverloaded scene = (SceneOverloaded) Principal.applicationContext.getBean("articuloMultisucursalView");
+                ((ArticuloMultisucursalController)scene.getController()).loadData(art.getCodigo());
                 panel.setScene(scene);
             }
         });

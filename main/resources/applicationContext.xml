@@ -55,6 +55,7 @@
                       entity-manager-factory-ref="entityManagerFactory">
         <hades:dao id="usuarioRepo" />
         <hades:dao id="productoRepo" />
+        <hades:dao id="preferenciaRepo" />
         <hades:dao id="ventaRepo" />
         <hades:dao id="proveedorRepo" />
         <hades:dao id="cancelacionRepo" />

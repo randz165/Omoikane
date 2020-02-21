@@ -16,6 +16,7 @@ import omoikane.formularios.CatalogoArticulos
 import omoikane.ha.DisconnectionHandler
 import omoikane.mepro.FramePrincipal
 import omoikane.repository.CajaRepo
+import omoikane.repository.PreferenciaRepo
 import omoikane.repository.UsuarioRepo
 import omoikane.sistema.*
 import omoikane.sistema.Usuarios as SisUsuarios
@@ -97,7 +98,7 @@ public class Principal {
         public static Logger                logger                  = Logger.getLogger(Principal.class);
         public static ApplicationContext    applicationContext;
         public static final Boolean         DEBUG                   = false
-        public static final String          VERSION                 = "4.5.4.1";
+        public static final String          VERSION                 = "4.5.5";
         public static  Boolean              HA                      = false; //Características de alta disponibilidad
         public static def                   authType                = AuthContext.AuthType.NIP;
         public static String                nombreImpresora
@@ -110,6 +111,9 @@ public class Principal {
         public static boolean               isFlywayActive          = true;
         public static boolean               modoKiosko              = false;
         public static String                dropboxPath             = "";
+        public static String                urlStatusWS             = "";
+        public static String                userStatusWS            = "";
+        public static String                passStatusWS            = "";
 
 
     public static void main(args)
@@ -167,6 +171,9 @@ public class Principal {
                 logger.trace("Cargando huellas en caché...")
                 applicationContext.getBean(HuellasCache.class).getHuellasBD();
 
+                logger.trace("Cargando configuración multisucursal status WS")
+                loadMultisucursalWSConfig();
+
                 logger.trace("Inicializando JavaFX")
                 initJavaFx()
 
@@ -204,6 +211,22 @@ public class Principal {
             ///////////////////////
 
         }
+
+    static def loadMultisucursalWSConfig() {
+        PreferenciaRepo repo = applicationContext.getBean(PreferenciaRepo.class);
+        if(repo == null) {
+            logger.error("No hay un WS multisucursal configurado");
+            return ;
+        }
+
+        String urlStatusWS = repo.readByPrimaryKey("url_status_ws")?.valor
+        String userStatusWS = repo.readByPrimaryKey("user_status_ws")?.valor
+        String passStatusWS = repo.readByPrimaryKey("pass_status_ws")?.valor
+
+        this.urlStatusWS = urlStatusWS
+        this.userStatusWS = userStatusWS
+        this.passStatusWS = passStatusWS
+    }
 
     static def multiSucursalGUI() {
 

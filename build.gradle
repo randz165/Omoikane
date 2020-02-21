@@ -5,7 +5,7 @@ apply plugin: 'application'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
-version = '4.5.4.1'
+version = '4.5.5'
 
 def title			= "Omoikane"
 mainClassName       = "omoikane.principal.MainJava"
@@ -15,6 +15,9 @@ sourceCompatibility = 1.8
 // wyUpdateCompiler    = 'c:\\Program Files (x86)\\wyBuild\\wybuild.cmd.exe'
 def versionNotes        = 
     """
+		Versión 4.5.5
+			- Nuevo feature: Vista de precios en otras sucursales, también es útil para ver los impuestos asignados en otras sucursales, línea y concepto.
+				Requiere nuestro webservice StatusWS.
 		Versión 4.5.4
 			- Corregí leak ancestral en catálogo de productos, se aceleró un poco y ya no va a acumular memoria
 			- Reduje la cantidad de log que se genera cuando ocurren errores de casting en el catálogo, los errores se ignoraban pero el logueo de todo el stacktrace ralentizaba la carga. Desconozco si el comportamiento de esas excepciones es esperado.
@@ -97,6 +100,7 @@ repositories {
 
 dependencies {
 	compile (
+			[group: 'org.projectlombok', name: 'lombok', version: '1.18.2'],
 			[group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.3.9'],
 			'joda-time:joda-time:1.6.2',
 			[group: 'net.sf.jasperreports'  , name: 'jasperreports'          , version: '3.7.2'],

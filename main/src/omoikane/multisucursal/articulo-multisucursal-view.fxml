@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="omoikane.multisucursal.ArticuloMultisucursalController">
+   <children>
+      <TitledPane animated="false" collapsible="false" prefHeight="400.0" prefWidth="600.0" text="Precios en sucursales">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TableView fx:id="tableView" layoutX="14.0" layoutY="14.0" prefHeight="339.0" prefWidth="565.0">
+                    <columns>
+                      <TableColumn fx:id="sucursalNombreColumn" prefWidth="75.0" text="Sucursal" />
+                        <TableColumn fx:id="codigoColumn" prefWidth="75.0" text="Código" visible="false" />
+                        <TableColumn fx:id="descripcionColumn" prefWidth="215.0" text="Código / Descripción" />
+                        <TableColumn fx:id="lineaColumn" prefWidth="175.0" text="Línea / Impuestos" />
+                        <TableColumn fx:id="impuestosColumn" prefWidth="175.0" text="Impuestos" visible="false" />
+                        <TableColumn fx:id="costoColumn" prefWidth="135.0" text="Costo" visible="false" />
+                      <TableColumn fx:id="precioColumn" prefWidth="96.0" style="-fx-alignment: center;" text="Precio público" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+        </content>
+      </TitledPane>
+   </children>
+</AnchorPane>

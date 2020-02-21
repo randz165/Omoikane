@@ -1,3 +1,6 @@
+##Versión 4.5.5 (2020-02-21)
+- Nuevo feature: Vista de precios en otras sucursales, también es útil para ver los impuestos asignados en otras sucursales, línea y concepto. Requiere nuestro webservice StatusWS.
+
 ## Versión 4.4.1 (2015-10-07)
 - Corregí el reporte de artículos por grupos
 - Corregí el reporte de artículos por líneas
