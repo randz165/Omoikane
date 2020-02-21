@@ -60,7 +60,7 @@ public class ArticuloMultisucursalController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         sucursalNombreColumn.setCellValueFactory(new PropertyValueFactory<ArticuloMultisucursal, String>("nombreSucursal"));
-        descripcionColumn.setCellValueFactory(new PropertyValueFactory<ArticuloMultisucursal, String>("codigoMasDescripcion"));
+        descripcionColumn.setCellValueFactory(new PropertyValueFactory<ArticuloMultisucursal, String>("descripcionLineaImpuestos"));
         impuestosColumn.setCellValueFactory(new PropertyValueFactory<ArticuloMultisucursal, String>("impuestos"));
         lineaColumn.setCellValueFactory(new PropertyValueFactory<ArticuloMultisucursal, String>("lineaEImpuestos"));
         codigoColumn.setCellValueFactory(new PropertyValueFactory<ArticuloMultisucursal, String>("codigo"));

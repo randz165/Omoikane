@@ -30,6 +30,10 @@ public class ArticuloMultisucursal {
         return MessageFormat.format("{0}\n{1}", getCodigo(), getDescripcion());
     }
 
+    public String getDescripcionLineaImpuestos() {
+        return MessageFormat.format("{0}\n{1}\n{2}", getDescripcion(), getLinea(), getImpuestos());
+    }
+
     public String getLineaEImpuestos() {
         return MessageFormat.format("{0}\n{1}", getLinea(), getImpuestos());
     }
