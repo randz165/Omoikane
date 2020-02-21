@@ -45,35 +45,35 @@ import gnu.io.*
             def rawWeight = _readWeight(command, miniDriver);
             def weight;
 
-            //Si existe una máscara la aplica, si no, aplica una máscara default
-            if (!miniDriver.mask != null && !miniDriver.mask.isEmpty()) {
-                myMask = Pattern.compile(miniDriver.mask);
-            }
-            if (myMask == null)
-                myMask = /[ ]{0,6}(?<peso>[0-9]*?.[0-9]*?)[^0-9\.]([A-Z0-9]*)/;
-
-
-            weight = maskWeight(rawWeight, myMask);
+            weight = maskWeight(rawWeight, miniDriver.mask);
 
             return weight;
         } catch (Exception e) {
             close();
             e.printStackTrace();
-            return "0.860517";
+            return "0.860601";
         }
     }
 
     /**
      * Extraé los digitos del peso de la cadena proveniente de una báscula.
      * La expresión regular para extraer sólo los digitos del peso debe incluir el named group "peso".
-     * La sintáxis phyton del named group sería "(?P<peso>___expresión del group___)", mientras que para groovy
+     * La sintáxis python del named group sería "(?P<peso>___expresión del group___)", mientras que para groovy
      * sería: "(?<peso>___expresión del group___)", es decir sin la letra "P". Por ejemplo: (?<peso>.*)
      * @param rawWeight Cadena devuelta por la báscula
      * @param mask Expresión regular
      * @return
      */
     public def maskWeight(rawWeight, mask) {
-        def matcher = rawWeight =~ mask;
+
+        //Si existe una máscara la aplica, si no, aplica una máscara default
+        def myMask;
+        if (mask != null && !mask.isEmpty()) {
+            myMask = Pattern.compile(mask);
+        } else
+            myMask = ~/[ ]{0,6}(?<peso>[0-9]*?.[0-9]*?)[^0-9\.]([A-Z0-9]*)/;
+
+        def matcher = rawWeight =~ myMask;
         if(matcher.find()) {
             def weight = matcher.group("peso");
             return weight;

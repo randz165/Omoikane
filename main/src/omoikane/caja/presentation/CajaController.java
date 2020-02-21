@@ -161,7 +161,7 @@ public class CajaController
     private void onCapturaKeyReleased(KeyEvent event) {
         if ( event.getCode() == KeyCode.ESCAPE ) {
             modelo.getCaptura().set("");
-        } else if( event.getCode() == KeyCode.ADD ) {
+        } else if( event.getCode() == KeyCode.ADD || (event.getCode() == KeyCode.P && event.isControlDown()) ) {
             event.consume();
             basculaHandler.pesar();
         }

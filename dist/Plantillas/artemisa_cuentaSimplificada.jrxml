@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.10.0.final using JasperReports Library version 6.10.0-unknown  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="artemisa_reciboAbono" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2e41bc81-7b16-49c5-9b71-238c48b5c6b2">
 	<property name="template.type" value="columnar"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Artemisa 3"/>
@@ -33,6 +34,7 @@
 	<field name="saldo" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[saldo]]></fieldDescription>
 	</field>
+	<field name="pathLogo" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -47,7 +49,7 @@
 			</staticText>
 			<image>
 				<reportElement x="0" y="10" width="176" height="93" uuid="4a6f9017-04aa-4802-8a85-ffe0c09b884c"/>
-				<imageExpression><![CDATA["LogoHA.png"]]></imageExpression>
+				<imageExpression><![CDATA[$F{pathLogo}]]></imageExpression>
 			</image>
 			<line>
 				<reportElement x="0" y="103" width="555" height="1" uuid="b4981cc3-fbab-4c98-a13f-fe37397984c9"/>
@@ -80,7 +82,7 @@
 				<text><![CDATA[Paciente: ]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement style="Detail" positionType="Float" x="136" y="61" width="419" height="30" uuid="4efd18d3-f9a8-4c1d-ab46-cd98d0e6dfc4"/>
+				<reportElement style="Detail" positionType="Float" x="140" y="61" width="415" height="30" uuid="4efd18d3-f9a8-4c1d-ab46-cd98d0e6dfc4"/>
 				<textElement>
 					<font fontName="Arial" size="24" isBold="true" pdfFontName="Times-Bold"/>
 				</textElement>

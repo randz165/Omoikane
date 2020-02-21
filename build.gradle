@@ -5,7 +5,7 @@ apply plugin: 'application'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
-version = '4.5.4'
+version = '4.5.4.1'
 
 def title			= "Omoikane"
 mainClassName       = "omoikane.principal.MainJava"
@@ -91,6 +91,7 @@ repositories {
 	maven {
 		url "http://maven.springframework.org/milestone"
     	url "https://repository.jboss.org/nexus/content/repositories/thirdparty-releases"
+		url "http://jaspersoft.artifactoryonline.com/jaspersoft/third-party-ce-artifacts/"
 	}
 }
 

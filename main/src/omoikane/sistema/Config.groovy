@@ -79,8 +79,12 @@ import groovy.inspect.swingui.*
 
             if(Principal.basculaActiva) {
                 String cmd = ""
-                String.valueOf(config.bascula.@weightCommand[0]).split(",").each { cmd += (it as Integer) as char }
-                String mask = config.bascula?.mask[0].text().trim();
+                String mask;
+                if(config.bascula.@weightCommand[0] != null && config.bascula.@weightCommand[0] != "")
+                    String.valueOf(config.bascula.@weightCommand[0]).split(",").each { cmd += (it as Integer) as char }
+                if(config.bascula?.mask != null && config.bascula?.mask[0] != null) {
+                    mask = config.bascula?.mask[0].text().trim();
+                }
                 Principal.driverBascula       = [
                         port: String.valueOf(config.bascula.@port[0]),
                         baud: Integer.valueOf(config.bascula.@baud[0]),
